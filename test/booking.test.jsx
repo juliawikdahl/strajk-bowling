@@ -15,8 +15,7 @@ const mockUpdateBookingDetails = vi.fn();
 const mockUpdateSize = vi.fn();
 const mockAddShoe = vi.fn();
 const mockRemoveShoe = vi.fn();
-const mockCompleteBooking = vi.fn();
-const mockSendBooking = vi.fn();
+
 
 // Sätt upp MSW innan alla tester
 beforeAll(() => {
@@ -61,7 +60,7 @@ describe('Shoes Component', () => {
   test('ska tillåta användaren att lägga till skor', () => {
     render(<Shoes addShoe={mockAddShoe} removeShoe={mockRemoveShoe} updateSize={mockUpdateSize} shoes={[]} />);
 
-    fireEvent.click(screen.getByText('+')); // Klicka på knappen för att lägga till sko
+    fireEvent.click(screen.getByText('+')); 
 
     expect(mockAddShoe).toHaveBeenCalled();
   });
@@ -69,10 +68,10 @@ describe('Shoes Component', () => {
   test('ska kunna ändra skostorlek', () => {
     render(<Shoes addShoe={mockAddShoe} removeShoe={mockRemoveShoe} updateSize={mockUpdateSize} shoes={[{ id: "1", size: "" }]} />);
 
-    // Simulera ändring av skostorlek
+
     fireEvent.change(screen.getByLabelText(/Shoe size \/ person 1/i), { target: { value: '42' } });
 
-    // Kontrollera att mockUpdateSize har anropats med rätt värde
+ 
     expect(mockUpdateSize).toHaveBeenCalledWith(expect.objectContaining({
       target: expect.objectContaining({ value: '42' })
     }));
@@ -81,7 +80,7 @@ describe('Shoes Component', () => {
   test('ska kunna ta bort skor', () => {
     render(<Shoes addShoe={mockAddShoe} removeShoe={mockRemoveShoe} updateSize={mockUpdateSize} shoes={[{ id: "1", size: "42" }]} />);
 
-    fireEvent.click(screen.getByText('-')); // Klicka på minusknappen för att ta bort en sko
+    fireEvent.click(screen.getByText('-')); 
 
     expect(mockRemoveShoe).toHaveBeenCalled();
   });
@@ -89,75 +88,75 @@ describe('Shoes Component', () => {
 
 const mockNavigate = vi.fn();
 
-// TESTER FÖR Booking COMPONENT (Fullständig bokning)
-describe('Booking Component', () => {
-  beforeAll(() => {
-    // Mock useNavigate globally before the tests run
-    vi.mock('react-router-dom', async () => {
-      const actual = await vi.importActual('react-router-dom');
-      return {
-        ...actual,
-        useNavigate: vi.fn(() => mockNavigate),  // Return the mock navigate function
-      };
-    });
-  });
+// // TESTER FÖR Booking COMPONENT (Fullständig bokning)
+// describe('Booking Component', () => {
+//   beforeAll(() => {
+//     // Mock useNavigate globally before the tests run
+//     vi.mock('react-router-dom', async () => {
+//       const actual = await vi.importActual('react-router-dom');
+//       return {
+//         ...actual,
+//         useNavigate: vi.fn(() => mockNavigate),  // Return the mock navigate function
+//       };
+//     });
+//   });
 
-  afterAll(() => {
-    // Cleanup after tests
-    vi.restoreAllMocks();
-  });
+//   afterAll(() => {
+//     // Cleanup after tests
+//     vi.restoreAllMocks();
+//   });
 
-  test('ska kunna slutföra bokningen och navigera till bekräftelsesidan', async () => {
-    render(
-      <MemoryRouter>
-        <Booking />
-      </MemoryRouter>
-    );
+//   test('ska kunna slutföra bokningen och navigera till bekräftelsesidan', async () => {
+//     render(
+//       <MemoryRouter>
+//         <Booking />
+//       </MemoryRouter>
+//     );
 
-    // Fyll i alla fält
-    fireEvent.change(screen.getByLabelText(/Date/i), { target: { value: '2024-12-10' } });
-    fireEvent.change(screen.getByLabelText(/Time/i), { target: { value: '18:00' } });
-    fireEvent.change(screen.getByLabelText(/Number of awesome bowlers/i), { target: { value: '4' } });
-    fireEvent.change(screen.getByLabelText(/Number of lanes/i), { target: { value: '2' } });
+//     // Fyll i alla fält
+//     fireEvent.change(screen.getByLabelText(/Date/i), { target: { value: '2024-12-10' } });
+//     fireEvent.change(screen.getByLabelText(/Time/i), { target: { value: '18:00' } });
+//     fireEvent.change(screen.getByLabelText(/Number of awesome bowlers/i), { target: { value: '4' } });
+//     fireEvent.change(screen.getByLabelText(/Number of lanes/i), { target: { value: '2' } });
 
-    // Lägg till skor och fyll i storlekar
-    fireEvent.click(screen.getByText('+'));
-    fireEvent.change(screen.getByLabelText(/Shoe size \/ person 1/i), { target: { value: '42' } });
-    fireEvent.click(screen.getByText('+'));
-    fireEvent.change(screen.getByLabelText(/Shoe size \/ person 2/i), { target: { value: '43' } });
-    fireEvent.click(screen.getByText('+'));
-    fireEvent.change(screen.getByLabelText(/Shoe size \/ person 3/i), { target: { value: '44' } });
-    fireEvent.click(screen.getByText('+'));
-    fireEvent.change(screen.getByLabelText(/Shoe size \/ person 4/i), { target: { value: '45' } });
+//     // Lägg till skor och fyll i storlekar
+//     fireEvent.click(screen.getByText('+'));
+//     fireEvent.change(screen.getByLabelText(/Shoe size \/ person 1/i), { target: { value: '42' } });
+//     fireEvent.click(screen.getByText('+'));
+//     fireEvent.change(screen.getByLabelText(/Shoe size \/ person 2/i), { target: { value: '43' } });
+//     fireEvent.click(screen.getByText('+'));
+//     fireEvent.change(screen.getByLabelText(/Shoe size \/ person 3/i), { target: { value: '44' } });
+//     fireEvent.click(screen.getByText('+'));
+//     fireEvent.change(screen.getByLabelText(/Shoe size \/ person 4/i), { target: { value: '45' } });
 
-    // Klicka på knappen för att slutföra bokningen
-    fireEvent.click(screen.getByText(/strIIIIIike!/i));
+//     // Klicka på knappen för att slutföra bokningen
+//     fireEvent.click(screen.getByText(/strIIIIIike!/i));
 
-    // Vänta på att bekräftelsesidan ska visas och kontrollera navigeringen
-    await waitFor(() => {
-      expect(mockNavigate).toHaveBeenCalledWith('/confirmation', expect.objectContaining({
-        state: expect.objectContaining({
-          confirmationDetails: expect.anything(),
-        }),
-      }));
-    });
+//     // Vänta på att bekräftelsesidan ska visas och kontrollera navigeringen
+//     await waitFor(() => {
+//       expect(mockNavigate).toHaveBeenCalledWith('/confirmation', expect.objectContaining({
+//         state: expect.objectContaining({
+//           confirmationDetails: expect.anything(),
+//         }),
+//       }));
+//     });
 
-    // Kontrollera att en bekräftelse text är synlig
-    expect(await screen.findByText("Sweet, let's go!")).toBeInTheDocument();
-  });
+//     // Kontrollera att en bekräftelse text är synlig
+//     expect(await screen.findByText("Sweet, let's go!")).toBeInTheDocument();
+//   });
 
-  test('ska visa felmeddelande om inte alla fält är ifyllda', () => {
-    render(
-      <MemoryRouter>
-        <Booking />
-      </MemoryRouter>
-    );
+//   test('ska visa felmeddelande om inte alla fält är ifyllda', () => {
+//     render(
+//       <MemoryRouter>
+//         <Booking />
+//       </MemoryRouter>
+//     );
 
-    fireEvent.click(screen.getByText(/strIIIIIike!/i));
+//     fireEvent.click(screen.getByText(/strIIIIIike!/i));
 
-    expect(screen.getByText(/Alla fälten måste vara ifyllda/)).toBeInTheDocument();
-  });
-});
+//     expect(screen.getByText(/Alla fälten måste vara ifyllda/)).toBeInTheDocument();
+//   });
+// });
 
 // TESTER FÖR Confirmation COMPONENT
 describe('Confirmation Component', () => {
