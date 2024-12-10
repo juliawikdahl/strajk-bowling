@@ -7,5 +7,10 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     include: ['test/**/*.jsx'],
+    coverage: {
+      provider: 'c8', 
+      reporter: ['text', 'html'],
+      all: true, 
+    },
   },
 });

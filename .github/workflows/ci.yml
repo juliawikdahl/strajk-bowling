@@ -1,4 +1,4 @@
-name: CI for Strajk Bowling
+name: CI with Vitest and Coverage Check
 
 on:
   push:
@@ -12,19 +12,33 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-     
       - name: Checkout code
         uses: actions/checkout@v2
 
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '20'
+          node-version: '14'
 
-  
       - name: Install dependencies
         run: npm install
 
-    
-      - name: Run tests
-        run: npm test
+      - name: Run tests with coverage
+        run: |
+          npm run test
+          
+          # Extrahera testtäckning från textrapporten
+          COVERAGE=$(cat ./coverage/coverage-summary.json | jq .total.lines.pct)
+          MIN_COVERAGE=90
+          
+          # Kolla om täckningen är tillräcklig
+          if [ $(echo "$COVERAGE < $MIN_COVERAGE" | bc) -eq 1 ]; then
+            echo "Test coverage is too low: $COVERAGE%. Minimum coverage is $MIN_COVERAGE%."
+            exit 1
+          fi
+
+      - name: Deploy to Production (om testtäckning är tillräcklig)
+        if: success()
+        run: |
+          echo "Deploying to production"
+          # Lägg till deploy-kommandon här
