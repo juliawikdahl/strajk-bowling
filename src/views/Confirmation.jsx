@@ -1,6 +1,5 @@
 import "./Confirmation.scss";
 import { useLocation } from "react-router-dom";
-
 import Top from "../components/Top/Top";
 import Navigation from "../components/Navigation/Navigation";
 import Input from "../components/Input/Input";
@@ -8,15 +7,26 @@ import Input from "../components/Input/Input";
 function Confirmation() {
   const { state } = useLocation();
 
-  const confirmation =
-    state?.confirmationDetails ||
-    JSON.parse(sessionStorage.getItem("confirmation"));
+  let confirmation = state?.confirmationDetails;
+
+  try {
+    // Försök att hämta och parsar JSON från sessionStorage om inte redan finns i state
+    if (!confirmation) {
+      const storedConfirmation = sessionStorage.getItem("confirmation");
+      if (storedConfirmation) {
+        confirmation = JSON.parse(storedConfirmation);
+      }
+    }
+  } catch (error) {
+    // Fångar ogiltig JSON och sätter confirmation till null
+    confirmation = null;
+  }
 
   return (
     <section className="confirmation">
       <Navigation />
       <Top title="See you soon!" />
-      {state || confirmation ? (
+      {confirmation ? (
         <form className="confirmation__details">
           <Input
             label="When"
