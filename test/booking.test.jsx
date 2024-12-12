@@ -168,7 +168,7 @@ describe('Booking Component', () => {
 
  
     server.use(
-      rest.post('https://h5jbtjv6if.execute-api.eu-north-1.amazonaws.com', (req, res, ctx) => {
+      rest.post('*', (req, res, ctx) => {
         return res(ctx.json({ confirmation: 'ABC123' }));
       })
     );
