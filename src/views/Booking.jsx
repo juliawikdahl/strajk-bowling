@@ -7,6 +7,7 @@ import ErrorMessage from "../components/ErrorMessage/ErrorMessage";
 import Navigation from "../components/Navigation/Navigation";
 import Shoes from "../components/Shoes/Shoes";
 import Top from "../components/Top/Top";
+import fetch from "node-fetch"
 
 function Booking() {
   const [booking, setBooking] = useState({

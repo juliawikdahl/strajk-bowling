@@ -186,52 +186,58 @@ describe('Booking Component', () => {
 
 // TESTER FÖR Confirmation COMPONENT
 describe('Confirmation Component', () => {
-  test('ska visa bokningsinformation när bokning finns', () => {
-    const mockBookingDetails = {
-      when: '2024-12-10T18:00',
-      people: 4,
-      lanes: 2,
-      id: '12345',
-      price: 680
-    };
-
-    sessionStorage.setItem('confirmation', JSON.stringify(mockBookingDetails));
-
-    render(
-      <MemoryRouter initialEntries={['/confirmation']}>
-        <Confirmation />
-      </MemoryRouter>
-    );
-
-    expect(screen.getByLabelText(/When/i).value).toBe('2024-12-10 18:00');
-    expect(screen.getByLabelText(/Who/i).value).toBe('4');
-    expect(screen.getByLabelText(/Lanes/i).value).toBe('2');
-    expect(screen.getByLabelText(/Booking number/i).value).toBe('12345');
-    expect(screen.getByText(/Total:/i)).toBeInTheDocument();
+    test('ska visa korrekt totalsumma baserat på spelare och banor', async () => {
+      const confirmationDetails = {
+        when: '2024-12-10T18:00',
+        people: 4,
+        lanes: 2,
+        id: '12345',
+        price: 680, 
+      };
+  
+     
+      sessionStorage.setItem('confirmation', JSON.stringify(confirmationDetails));
+  
+      render(
+        <MemoryRouter initialEntries={['/confirmation']}>
+          <Confirmation />
+        </MemoryRouter>
+      );
+  
+ 
+      await waitFor(() => {
+        expect(screen.getByLabelText(/When/i).value).toBe('2024-12-10 18:00');
+        expect(screen.getByLabelText(/Who/i).value).toBe('4');
+        expect(screen.getByLabelText(/Lanes/i).value).toBe('2');
+        expect(screen.getByLabelText(/Booking number/i).value).toBe('12345');
+        expect(screen.getByText(/Total:/i)).toBeInTheDocument();
+      });
+  
+     
+      expect(screen.getByText(/680 sek/i)).toBeInTheDocument();
+    });
+  
+    test('ska visa fallback-meddelande om bokningsdata är korrupt', async () => {
+      sessionStorage.setItem('confirmation', 'invalid-json');
+  
+      render(
+        <MemoryRouter initialEntries={['/confirmation']}>
+          <Confirmation />
+        </MemoryRouter>
+      );
+  
+      expect(screen.getByText(/Inga bokning gjord!/i)).toBeInTheDocument();
+    });
+  
+    test('ska visa meddelande om ingen bokning finns', async () => {
+      sessionStorage.removeItem('confirmation');
+  
+      render(
+        <MemoryRouter initialEntries={['/confirmation']}>
+          <Confirmation />
+        </MemoryRouter>
+      );
+  
+      expect(screen.getByText(/Inga bokning gjord!/i)).toBeInTheDocument();
+    });
   });
-
-  test('ska visa fallback-meddelande om bokningsdata är korrupt', () => {
-    
-    sessionStorage.setItem('confirmation', 'invalid-json');
-
-    render(
-      <MemoryRouter initialEntries={['/confirmation']}>
-        <Confirmation />
-      </MemoryRouter>
-    );
-
-    expect(screen.getByText(/Inga bokning gjord!/i)).toBeInTheDocument();
-  });
-
-  test('ska visa meddelande om ingen bokning finns', () => {
-    sessionStorage.removeItem('confirmation');
-
-    render(
-      <MemoryRouter initialEntries={['/confirmation']}>
-        <Confirmation />
-      </MemoryRouter>
-    );
-
-    expect(screen.getByText(/Inga bokning gjord!/i)).toBeInTheDocument();
-  });
-});
