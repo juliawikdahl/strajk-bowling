@@ -1,4 +1,4 @@
-// src/__tests__/example.test.js
+
 import { test, expect } from 'vitest';
 
 test('addition works', () => {

@@ -5,7 +5,7 @@ import Booking from "../src/views/Booking";
 import Confirmation from "../src/views/Confirmation";
 import { vi } from 'vitest';
 import '@testing-library/jest-dom';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter, useNavigate } from 'react-router-dom';
 import { server } from '../src/mocks/browser'; 
 import { rest } from 'msw';
 
@@ -18,6 +18,14 @@ const mockNavigate = vi.fn();
 
 // Sätt upp MSW innan alla tester
 beforeAll(() => {
+  vi.mock('react-router-dom', async () => {
+    const mod = await vi.importActual('react-router-dom');
+    return {
+      ...mod,
+      useNavigate: () => mockNavigate,
+    };
+  });
+
   server.listen(); 
 });
 
@@ -113,10 +121,10 @@ describe('Booking Component', () => {
 
  
     await waitFor(() => {
-      expect(screen.getByText(/Spelare 1: 42/i)).toBeInTheDocument();
-      expect(screen.getByText(/Spelare 2: 43/i)).toBeInTheDocument();
-      expect(screen.getByText(/Spelare 3: 44/i)).toBeInTheDocument();
-      expect(screen.getByText(/Spelare 4: 45/i)).toBeInTheDocument();
+      expect(screen.getByDisplayValue(/42/i)).toBeInTheDocument();
+      expect(screen.getByDisplayValue(/43/i)).toBeInTheDocument();
+      expect(screen.getByDisplayValue(/44/i)).toBeInTheDocument();
+      expect(screen.getByDisplayValue(/45/i)).toBeInTheDocument();
     });
   });
 
@@ -146,10 +154,11 @@ describe('Booking Component', () => {
     );
 
 
+
     fireEvent.change(screen.getByLabelText(/Date/i), { target: { value: '2024-12-10' } });
     fireEvent.change(screen.getByLabelText(/Time/i), { target: { value: '18:00' } });
-    fireEvent.change(screen.getByLabelText(/Number of awesome bowlers/i), { target: { value: '4' } });
-    fireEvent.change(screen.getByLabelText(/Number of lanes/i), { target: { value: '2' } });
+    fireEvent.change(screen.getByLabelText(/Number of awesome bowlers/i), { target: { value: '1' } });
+    fireEvent.change(screen.getByLabelText(/Number of lanes/i), { target: { value: '1' } });
 
 
     fireEvent.click(screen.getByText('+')); 

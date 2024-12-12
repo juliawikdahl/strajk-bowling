@@ -112,10 +112,10 @@ function Booking() {
       errorMessage = "Det får max vara 4 spelare per bana";
     }
 
-    // Om det finns något fel, sätt error och avsluta funktionen
+    
     if (errorMessage) {
       setError(errorMessage);
-      return; // Stoppa här om ett fel inträffar
+      return; 
     }
 
     const bookingInfo = {

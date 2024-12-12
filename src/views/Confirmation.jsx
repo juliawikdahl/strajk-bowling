@@ -10,7 +10,6 @@ function Confirmation() {
   let confirmation = state?.confirmationDetails;
 
   try {
-    // Försök att hämta och parsar JSON från sessionStorage om inte redan finns i state
     if (!confirmation) {
       const storedConfirmation = sessionStorage.getItem("confirmation");
       if (storedConfirmation) {
@@ -18,7 +17,7 @@ function Confirmation() {
       }
     }
   } catch (error) {
-    // Fångar ogiltig JSON och sätter confirmation till null
+
     confirmation = null;
   }
 
