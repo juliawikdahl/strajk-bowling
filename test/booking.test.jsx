@@ -18,21 +18,20 @@ const mockNavigate = vi.fn();
 
 // Sätt upp MSW innan alla tester
 beforeAll(() => {
-  vi.mock('react-router-dom', async () => {
-    const mod = await vi.importActual('react-router-dom');
-    return {
-      ...mod,
-      useNavigate: () => mockNavigate,
-    };
-  });
 
   server.listen(); 
 });
 
 // Återställ MSW efter varje test
-afterEach(() => {
-  server.resetHandlers(); 
-});
+beforeEach(() => {
+    vi.mock('react-router-dom', async () => {
+      const mod = await vi.importActual('react-router-dom');
+      return {
+        ...mod,
+        useNavigate: () => mockNavigate,
+      };
+    });
+  })
 
 // Stäng av MSW efter alla tester
 afterAll(() => {
